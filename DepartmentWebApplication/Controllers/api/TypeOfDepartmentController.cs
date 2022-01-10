@@ -5,19 +5,20 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DepartmentWebApplication.Controllers
 {
-    public class EmployeeController : ApiController
+    public class TypeOfDepartmentController : ApiController
     {
-      Department DepartmentDB = new Department();
-        // GET: api/Employee
+        Department DepartmentDB = new Department();
+        // GET: api/TypeOfDepartment
         public IHttpActionResult Get()
         {
             try
             {
-                return Ok(DepartmentDB.Employee.ToList());
+                return Ok(DepartmentDB.TypeOfDepartmentcs.ToList());
             }
             catch (SqlException ex)
             {
@@ -29,13 +30,12 @@ namespace DepartmentWebApplication.Controllers
             }
         }
 
-        // GET: api/Employee/5
-        public IHttpActionResult Get(int id)
+        // GET: api/TypeOfDepartment/5
+        public async Task<IHttpActionResult> Get(int id)
         {
-         
             try
             {
-                return Ok(DepartmentDB.Employee.First((item) => item.Id == id));
+                return Ok(await DepartmentDB.TypeOfDepartmentcs.FindAsync(id));
             }
             catch (SqlException ex)
             {
@@ -47,13 +47,13 @@ namespace DepartmentWebApplication.Controllers
             }
         }
 
-        // POST: api/Employee
-        public IHttpActionResult Post([FromBody]Employee value)
+        // POST: api/TypeOfDepartment
+        public async Task<IHttpActionResult> Post([FromBody] TypeOfDepartmentcs value)
         {
             try
             {
-                DepartmentDB.Employee.Add(value);
-                DepartmentDB.SaveChanges();
+                DepartmentDB.TypeOfDepartmentcs.Add(value);
+               await DepartmentDB.SaveChangesAsync();
                 return Ok("item was ADD");
             }
             catch (SqlException ex)
@@ -66,21 +66,18 @@ namespace DepartmentWebApplication.Controllers
             }
         }
 
-        // PUT: api/Employee/5
-        public IHttpActionResult Put(int id, [FromBody]Employee value)
+        // PUT: api/TypeOfDepartment/5
+        public async Task<IHttpActionResult> Put(int id, [FromBody] TypeOfDepartmentcs value)
         {
             try
             {
-
-                Employee employeeFound = DepartmentDB.Employee.First((item) => item.Id == id);
-                employeeFound.Id=value.Id;
-                employeeFound.FullName=value.FullName;
-                employeeFound.Age=value.Age;
-                employeeFound.Salary=value.Salary;
-                employeeFound.TypeOfDepartmentcs=value.TypeOfDepartmentcs;
-                DepartmentDB.SaveChanges();
-                return Ok("item was Update");
-
+                TypeOfDepartmentcs typeOfDepartmentcsFound = await DepartmentDB.TypeOfDepartmentcs.FindAsync(id);
+                typeOfDepartmentcsFound.Id = value.Id;
+                typeOfDepartmentcsFound.NameOfDepartment = value.NameOfDepartment;
+                typeOfDepartmentcsFound.TypeOfWork = value.TypeOfWork;
+                typeOfDepartmentcsFound.NumberOfEmployee = value.NumberOfEmployee;
+                await DepartmentDB.SaveChangesAsync();
+                return Ok("itam was update");
 
             }
             catch (SqlException ex)
@@ -93,13 +90,16 @@ namespace DepartmentWebApplication.Controllers
             }
         }
 
-        // DELETE: api/Employee/5
-        public IHttpActionResult Delete(int id)
+
+        // DELETE: api/TypeOfDepartment/5
+        public async Task<IHttpActionResult> Delete(int id)
         {
             try
             {
-              DepartmentDB.Employee.Remove(DepartmentDB.Employee.First((item)=>item.Id==id));
+                DepartmentDB.TypeOfDepartmentcs.Remove(await DepartmentDB.TypeOfDepartmentcs.FindAsync(id));
+               
                 return Ok("item was deleted");
+
             }
             catch (SqlException ex)
             {
